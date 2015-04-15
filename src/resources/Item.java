@@ -14,10 +14,20 @@ public class Item {
     // The description of the item
     private String description;
 
+    // Indicates whether this item can be taken or not.
+    private boolean canBeTaken;
+
     public Item(String _itemName, String _description){
         itemName = _itemName;
         quantity = 1;
         description = _description;
+        canBeTaken = true;
+    }
+
+    public Item(String _itemName, String _description, boolean _canBeTaken){
+        itemName = _itemName;
+        description = _description;
+        canBeTaken = _canBeTaken;
     }
 
     /**
@@ -57,5 +67,9 @@ public class Item {
      */
     public int getQuantity(){
         return quantity;
+    }
+
+    public boolean canBeTaken(){
+        return canBeTaken;
     }
 }

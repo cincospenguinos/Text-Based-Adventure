@@ -31,9 +31,9 @@ public class Room {
         description = _description;
         publicName = _publicName;
 
-        items = new HashMap<String, Item>();
-        sentients = new HashMap<String, Sentient>();
-        connectedRooms = new HashMap<Direction, Room>();
+        items = new HashMap<>();
+        sentients = new HashMap<>();
+        connectedRooms = new HashMap<>();
 
         visited = false;
     }
@@ -141,8 +141,14 @@ public class Room {
      * @return Item - the item to take, or null
      */
     public Item takeItem(String itemName){
-        if(items.containsKey(itemName))
+        if(items.containsKey(itemName)) {
+            Item i = items.get(itemName);
+
+            if(!i.canBeTaken())
+                return null;
+
             return items.get(itemName);
+        }
 
         return null;
     }

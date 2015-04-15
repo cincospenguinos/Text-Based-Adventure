@@ -19,13 +19,36 @@ public class AndreAdventure {
         player = new Player(input.nextLine());
         player.addToScore(-1); // because one will be added when the game starts.
 
-        // TODO: Create the rooms and populate them.
         // Now let's create all the rooms and add the necessary items.
         Room apartment = new Room("Apartment", "You are in an apartment. " +
                 "Everything inside has been scraped out, with paint chipping off the walls. The floor has a thin" +
                 "layer of carpet.");
+        apartment.addItem(new Item("Machete", "A steel machete that says \"Made in Brazil\" on the blade."));
+
         Room outside = new Room("Outside", "You are outside. The moonlight reflects " +
                 "off of the windows to your WEST.");
+
+        Room shrine = new Room("Shrine", "You find yourself in front of a grand and majestic shrine. There seems to" +
+                "be an inscription upon the base of it.");
+        shrine.addItem(new Item("Inscription", "It says \"One iron loaf and one basin of water will summon the great" +
+                "ruler.\"", false));
+
+        // TODO: Create more rooms and populate them.
+
+        // Now let's add the connections:
+        try{
+            apartment.addConnection(Direction.NORTH, outside);
+            outside.addConnection(Direction.SOUTH, apartment);
+
+            apartment.addConnection(Direction.SOUTH, shrine);
+            shrine.addConnection(Direction.NORTH, apartment);
+        } catch(Exception e){
+            System.err.println("A connection exists already!");
+            System.exit(1);
+        }
+
+        // The player begins inside the apartment
+        currentRoom = apartment;
     }
 
     public static void main(String[] args){
@@ -144,7 +167,7 @@ public class AndreAdventure {
             System.out.println("Taken.");
         }
         else
-            System.out.println("That item does not exist here.");
+            System.out.println("You cannot take that.");
     }
 
     /**
