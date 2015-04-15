@@ -17,25 +17,15 @@ public class AndreAdventure {
         input = new Scanner(System.in);
         System.out.println("Please insert name (you will be able to change this later):");
         player = new Player(input.nextLine());
+        player.addToScore(-1); // because one will be added when the game starts.
 
-        currentRoom = new Room("Apartment", "You are in an apartment. " +
+        // TODO: Create the rooms and populate them.
+        // Now let's create all the rooms and add the necessary items.
+        Room apartment = new Room("Apartment", "You are in an apartment. " +
                 "Everything inside has been scraped out, with paint chipping off the walls. The floor has a thin" +
                 "layer of carpet.");
-
-        // Add the connected rooms
-        try {
-            // The Apartment to outside
-            Room outside = new Room("Outside", "You are outside. The moonlight reflects " +
-                    "off of the windows to your WEST.");
-            currentRoom.addConnection(Direction.NORTH, outside);
-            outside.addConnection(Direction.SOUTH, currentRoom);
-        } catch (Exception e) {
-            System.err.println("Something bad happened. No idea what.");
-            System.exit(1);
-        }
-
-        // Add items to the connected rooms
-        currentRoom.addItem(new Item("Machete", "A shiny, steel machete, made in Brazil."));
+        Room outside = new Room("Outside", "You are outside. The moonlight reflects " +
+                "off of the windows to your WEST.");
     }
 
     public static void main(String[] args){
@@ -46,13 +36,14 @@ public class AndreAdventure {
      * Plays the game.
      */
     public void play(){
-        String command = "";
+        String command;
 
         while(true){
             // If the current room has been visited, don't show a description.
             System.out.println(currentRoom.getPublicName() + "\n");
             if(!currentRoom.isVisited()){
                 currentRoom.look();
+                player.addToScore(1); // one point for exploring a new room
                 currentRoom.visit();
             }
 
@@ -163,7 +154,7 @@ public class AndreAdventure {
      */
     private void lookAtItem(String item){
         if(item.contains("look at"))
-            item.replace("look at", "");
+            item = item.replace("look at", "");
 
         currentRoom.lookAt(item);
     }
