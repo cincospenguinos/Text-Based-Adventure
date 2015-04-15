@@ -1,0 +1,170 @@
+package andre_adventure;
+
+import java.util.Scanner;
+import resources.*;
+
+/**
+ * AndreAdventure class - the first very simple adventure for Andre's text based adventure game.
+ */
+public class AndreAdventure {
+
+    private Player player;
+    private Room currentRoom;
+    private Scanner input;
+
+    public AndreAdventure() {
+        // Create the player
+        input = new Scanner(System.in);
+        System.out.println("Please insert name (you will be able to change this later):");
+        player = new Player(input.nextLine());
+
+        currentRoom = new Room("Apartment", "You are in an apartment. " +
+                "Everything inside has been scraped out, with paint chipping off the walls. The floor has a thin" +
+                "layer of carpet.");
+
+        // Add the connected rooms
+        try {
+            // The Apartment to outside
+            Room outside = new Room("Outside", "You are outside. The moonlight reflects " +
+                    "off of the windows to your WEST.");
+            currentRoom.addConnection(Direction.NORTH, outside);
+            outside.addConnection(Direction.SOUTH, currentRoom);
+        } catch (Exception e) {
+            System.err.println("Something bad happened. No idea what.");
+            System.exit(1);
+        }
+
+        // Add items to the connected rooms
+        currentRoom.addItem(new Item("Machete", "A shiny, steel machete, made in Brazil."));
+    }
+
+    public static void main(String[] args){
+        new AndreAdventure().play();
+    }
+
+    /**
+     * Plays the game.
+     */
+    public void play(){
+        String command = "";
+
+        while(true){
+            // If the current room has been visited, don't show a description.
+            System.out.println(currentRoom.getPublicName() + "\n");
+            if(!currentRoom.isVisited()){
+                currentRoom.look();
+                currentRoom.visit();
+            }
+
+            System.out.print("> ");
+            command = input.nextLine().toLowerCase();
+
+            if(command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit"))
+                break;
+
+            else if(command.equalsIgnoreCase("help") || command.equals("?"))
+                showHelp();
+
+            else if(isDirection(command))
+                goDirection(command);
+
+            else if(command.contains("take") || command.contains("get"))
+                takeItem(command);
+
+            else if(command.equals("look"))
+                currentRoom.look();
+
+            else if(command.contains("look at"))
+                lookAtItem(command);
+
+            else if(command.equals("inv"))
+                player.showInventory();
+
+            else if(command.equals("score"))
+                System.out.println("Your score: " + player.getScore());
+
+            else if(command.equals("help") || command.equals("?"))
+                showHelp();
+            else
+                System.out.println("I don't understand that.");
+        }
+
+        input.close();
+    }
+
+    /**
+     * Returns true if the string passed is a direction.
+     * @param s - String that was provided by the user
+     * @return true if s is a direction
+     */
+    private boolean isDirection(String s){
+        return s.equalsIgnoreCase("n") || s.equalsIgnoreCase("ne") || s.equalsIgnoreCase("e") ||
+                s.equalsIgnoreCase("se") || s.equalsIgnoreCase("s") || s.equalsIgnoreCase("sw") ||
+                s.equalsIgnoreCase("w") || s.equalsIgnoreCase("nw") || s.equalsIgnoreCase("up") ||
+                s.equalsIgnoreCase("down") || s.toLowerCase().contains("go");
+    }
+
+    /**
+     * Prints out a list of commands.
+     */
+    private void showHelp(){
+        System.out.println("***** LIST OF COMMANDS *****");
+        System.out.println("help/? - Displays this menu");
+        System.out.println("go [direction] - Goes in that direction");
+        System.out.println("take [item] - takes the item requested");
+        System.out.println("drop [item] - drops the item from the inventory");
+        System.out.println("look - shows what the current area looks like");
+        System.out.println("look at [item] - describes the item in the current area");
+        System.out.println("inv - displays the inventory");
+        System.out.println("score - displays your current score");
+    }
+
+    /**
+     * Goes in the direction requested, if it exists in the current room.
+     *
+     * @param direction to go
+     */
+    private void goDirection(String direction){
+        Direction d = Direction.toDirection(direction);
+
+        if(currentRoom.getConnection(d) != null)
+            currentRoom = currentRoom.getConnection(d);
+        else
+            System.out.println("There is not a path that way that goes anywhere.");
+    }
+
+    /**
+     * Gets the item or indicates to the player that the item requested is not here.
+     *
+     * @param item to take
+     */
+    private void takeItem(String item){
+        // Make sure that we only have the item name.
+        if(item.contains("get"))
+            item = item.replace("get", "");
+        if(item.contains("take"))
+            item = item.replace("take", "");
+        item = item.trim();
+
+        // If the item exists, get it. Otherwise, let the player know
+        Item i = currentRoom.takeItem(item);
+        if((i != null)){
+            player.addItem(i);
+            System.out.println("Taken.");
+        }
+        else
+            System.out.println("That item does not exist here.");
+    }
+
+    /**
+     * Shows the description of the item requested.
+     *
+     * @param item to look at
+     */
+    private void lookAtItem(String item){
+        if(item.contains("look at"))
+            item.replace("look at", "");
+
+        currentRoom.lookAt(item);
+    }
+}
