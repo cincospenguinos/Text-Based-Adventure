@@ -5,28 +5,47 @@ import java.util.HashMap;
 /**
  * Representation of a Sentient in a text based adventure game.
  */
-public abstract class Sentient {
+public class Sentient {
 
     // The name of this Sentient
-    protected String name;
+    private String name;
 
     // The number of hit points this sentient has
-    protected int currentHitPoints;
+    private int currentHitPoints;
 
     // Total number of hit points this Sentient can have.
-    protected int totalHitPoints;
+    private int totalHitPoints;
 
     // The defense bonus of this sentient.
-    protected int defense;
+    private int defense;
 
     // Double value representing the chance of hitting this sentient.
-    protected double toHit;
+    private double toHit;
+
+    // The amount of guaranteed damage that this Sentient will do
+    private int damage;
 
     // True if this Sentient is dead - that is, when HP <= 0
-    protected boolean isDead;
+    private boolean isDead;
+
+    // True if this Sentient is hostile - that is, will attack
+    private boolean isHostile;
 
     // The inventory of this Sentient
-    protected HashMap<String, Item> inventory;
+    private HashMap<String, Item> inventory;
+
+    public Sentient(String _name, int hitPoints, int _defense, int _damage, double _toHit, boolean _isHostile){
+        name = _name;
+        currentHitPoints = hitPoints;
+        totalHitPoints = hitPoints;
+        defense = _defense;
+        toHit = _toHit;
+        damage = _damage;
+        isHostile = _isHostile;
+        isDead = false;
+
+        inventory = new HashMap<>();
+    }
 
     /**
      * Instantiates all the objects for this Sentient
@@ -46,6 +65,18 @@ public abstract class Sentient {
     }
 
     /**
+     * Drops the item from this Sentient's inventory
+     * @param itemName - name of item to drop
+     * @return null or the item that is to be dropped
+     */
+    public Item dropItem(String itemName) {
+        if (inventory.containsKey(itemName.toLowerCase()))
+            return inventory.remove(itemName);
+
+        return null;
+    }
+
+    /**
      * Shows the Sentient's inventory.
      */
     public void showInventory(){
@@ -54,18 +85,13 @@ public abstract class Sentient {
     }
 
     /**
-     * Talks to this sentient.
-     */
-    public abstract void talk();
-
-    /**
      * Attacks the sentient passed.
      * @param s - The Sentient to attack
      * @return true if the attak hits.
      */
     public boolean attack(Sentient s){
         if(Math.random() < toHit) {
-            s.takeDamage((int)(Math.random() * 10));
+            s.takeDamage(damage + (int)(Math.random() / 3));
             return true;
         } else
             return false;
@@ -83,6 +109,10 @@ public abstract class Sentient {
 
         if(currentHitPoints <= 0)
             isDead = true;
+
+        System.out.println("DAMAGE DEALT: " + (defense - damage));
+        System.out.println("CURRENT HP: " + currentHitPoints);
+        System.out.println("IS HE CURRENTLY DEAD: " + isDead);
     }
 
     /**
@@ -105,5 +135,19 @@ public abstract class Sentient {
      */
     public boolean isDead(){
         return isDead;
+    }
+
+    public boolean isHostile() { return isHostile; }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String _name){
+        name = _name;
+    }
+
+    public int getCurrentHitPoints(){
+        return currentHitPoints;
     }
 }

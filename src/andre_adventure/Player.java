@@ -11,41 +11,28 @@ public class Player extends Sentient {
     private int score;
 
     public Player(String _name){
-        instantiate(_name);
-
-        toHit = 0.5;
-        currentHitPoints = totalHitPoints = 10;
+        super(_name, 10, 3, 3, 0.5, false);
 
         score = 0;
-    }
-
-    public Item dropItem(String itemName) {
-        if (inventory.containsKey(itemName.toLowerCase()))
-            return inventory.remove(itemName);
-
-        return null;
     }
 
     /**
      * Prints a message depending on the player's health.
      */
     public void checkHealth(){
-        if(currentHitPoints == 10)
+        int currentHP = getCurrentHitPoints();
+        if(currentHP == 10)
             System.out.println("You are feeling healthy.");
-        else if(currentHitPoints >= 7)
+        else if(currentHP >= 7)
             System.out.println("You feel a little scraped and cut.");
-        else if(currentHitPoints >= 5)
+        else if(currentHP >= 5)
             System.out.println("You are injured.");
-        else if(currentHitPoints >= 2)
+        else if(currentHP >= 2)
             System.out.println("You are seriously injured.");
-        else if(currentHitPoints == 1)
+        else if(currentHP == 1)
             System.out.println("You are on the verge of death.");
         else
-            System.err.println("This method should not be called when player has " + currentHitPoints + " hit points!");
-    }
-
-    public void setName(String _name){
-        name = _name;
+            System.err.println("This method should not be called when player has " + currentHP + " hit points!");
     }
 
     public void addToScore(int i){
@@ -55,8 +42,4 @@ public class Player extends Sentient {
     public int getScore(){
         return score;
     }
-
-    // Unused methods
-    @Override
-    public void talk() {}
 }

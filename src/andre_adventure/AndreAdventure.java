@@ -1,6 +1,7 @@
 package andre_adventure;
 
 import java.util.Scanner;
+import java.util.List;
 import resources.*;
 
 /**
@@ -9,7 +10,10 @@ import resources.*;
 public class AndreAdventure {
 
     private Player player;
+
     private Room currentRoom;
+    private List<Sentient> enemies;
+
     private Scanner input;
 
     public AndreAdventure() {
@@ -27,6 +31,7 @@ public class AndreAdventure {
 
         Room outside = new Room("Outside", "You are outside. The moonlight reflects " +
                 "off of the windows upon the building surrounding you.");
+        outside.addSentient(new Sentient("Mean Bird", 4, 1, 2, 0.3, true)); // An enemy - a mean bird
 
         Room shrine = new Room("Shrine", "You find yourself in front of a grand and majestic shrine. There seems to " +
                 "be an inscription upon the base of it.");
@@ -49,6 +54,7 @@ public class AndreAdventure {
 
         // The player begins inside the apartment
         currentRoom = apartment;
+        enemies = currentRoom.getHostileSentients();
     }
 
     public static void main(String[] args){
@@ -68,6 +74,17 @@ public class AndreAdventure {
                 currentRoom.look();
                 player.addToScore(1); // one point for exploring a new room
                 currentRoom.visit();
+            }
+
+            // Get the hostile enemies and apply attacks
+            enemies = currentRoom.getHostileSentients();
+
+            for(Sentient s : enemies) {
+                System.out.println("You are attacked by " + s.getName() + ".");
+                if(s.attack(player)){
+                    System.out.println("You have been hit.");
+                    player.checkHealth();
+                }
             }
 
             System.out.print("> ");
@@ -96,6 +113,9 @@ public class AndreAdventure {
 
             else if(command.equals("score"))
                 System.out.println("Your score: " + player.getScore());
+
+            else if(command.contains("attack"))
+                attack(command);
 
             else if(command.equals("help") || command.equals("?"))
                 showHelp();
@@ -189,5 +209,43 @@ public class AndreAdventure {
 
         // Now look at the item.
         currentRoom.lookAt(item);
+    }
+
+    /**
+     * Manages attacking an enemy
+     */
+    private void attack(String enemy){
+        if(enemies.size() == 0){
+            System.out.println("There is nothing to attack!");
+            return;
+        }
+
+        if(enemy.contains("attack"))
+            enemy = enemy.replace("attack", "");
+
+        enemy = enemy.trim();
+
+        // If we have a target, go ahead and attack him
+        Sentient toAttack = null;
+
+        for(Sentient s : enemies)
+            if(s.getName().toLowerCase().equals(enemy)) {
+                toAttack = s;
+                break;
+            }
+
+        // Otherwise attack the first one
+        if(toAttack == null)
+            toAttack = enemies.get(0);
+
+        if(player.attack(toAttack)) {
+            System.out.println("You hit the enemy!");
+            if(toAttack.isDead()) {
+                System.out.println("The enemy is dead.");
+                player.addToScore(5); // Add points for killing an enemy.
+            }
+        }
+        else
+            System.out.println("You missed the enemy.");
     }
 }

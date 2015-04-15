@@ -1,6 +1,7 @@
 package resources;
 
-import com.sun.javafx.tools.ant.Application;
+import java.util.List;
+import java.util.ArrayList;
 
 import java.util.HashMap;
 
@@ -70,10 +71,44 @@ public class Room {
      * @param sentientName - name of the sentient to speak to
      */
     public void talkTo(String sentientName){
+        // TODO: Figure out this method
+    }
+
+    /**
+     * Adds the sentient passed to this room.
+     * @param s - Sentient to add
+     */
+    public void addSentient(Sentient s){
+        sentients.put(s.getName().toLowerCase(), s);
+    }
+
+    /**
+     * Returns the sentient matching the name requested. This method
+     * returns null if the Sentient requested does not exist.
+     *
+     * @param sentientName - name of the sentient
+     * @return Sentient matchting the name or null.
+     */
+    public Sentient getSentient(String sentientName){
         if(sentients.containsKey(sentientName))
-            sentients.get(sentientName).talk();
-        else
-            System.out.println("I don't know who or what that is.");
+            return sentients.get(sentientName.toLowerCase());
+
+        return null;
+    }
+
+    /**
+     * Returns a list of hostile sentients that will attack the player.
+     *
+     * @return List of Sentient objects that are hostile to the player.
+     */
+    public List<Sentient> getHostileSentients(){
+        ArrayList<Sentient> list = new ArrayList<>();
+
+        for(Sentient s : sentients.values())
+            if(s.isHostile())
+                list.add(s);
+
+        return list;
     }
 
     /**
