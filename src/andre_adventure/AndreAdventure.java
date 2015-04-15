@@ -21,17 +21,17 @@ public class AndreAdventure {
 
         // Now let's create all the rooms and add the necessary items.
         Room apartment = new Room("Apartment", "You are in an apartment. " +
-                "Everything inside has been scraped out, with paint chipping off the walls. The floor has a thin" +
+                "Everything inside has been scraped out, with paint chipping off the walls. The floor has a thin " +
                 "layer of carpet.");
         apartment.addItem(new Item("Machete", "A steel machete that says \"Made in Brazil\" on the blade."));
 
         Room outside = new Room("Outside", "You are outside. The moonlight reflects " +
-                "off of the windows to your WEST.");
+                "off of the windows upon the building surrounding you.");
 
-        Room shrine = new Room("Shrine", "You find yourself in front of a grand and majestic shrine. There seems to" +
+        Room shrine = new Room("Shrine", "You find yourself in front of a grand and majestic shrine. There seems to " +
                 "be an inscription upon the base of it.");
-        shrine.addItem(new Item("Inscription", "It says \"One iron loaf and one basin of water will summon the great" +
-                "ruler.\"", false));
+        shrine.addItem(new Item("Inscription", "The inscription says " +
+                "\"One iron loaf and one basin of water will summon the great ruler.\"", false));
 
         // TODO: Create more rooms and populate them.
 
@@ -114,8 +114,11 @@ public class AndreAdventure {
     private boolean isDirection(String s){
         return s.equalsIgnoreCase("n") || s.equalsIgnoreCase("ne") || s.equalsIgnoreCase("e") ||
                 s.equalsIgnoreCase("se") || s.equalsIgnoreCase("s") || s.equalsIgnoreCase("sw") ||
-                s.equalsIgnoreCase("w") || s.equalsIgnoreCase("nw") || s.equalsIgnoreCase("up") ||
-                s.equalsIgnoreCase("down") || s.toLowerCase().contains("go");
+                s.equalsIgnoreCase("w") || s.equalsIgnoreCase("nw") ||s.equalsIgnoreCase("north") ||
+                s.equalsIgnoreCase("north east") || s.equalsIgnoreCase("east") || s.equalsIgnoreCase("south east") ||
+                s.equalsIgnoreCase("south") || s.equalsIgnoreCase("south west") ||s.equalsIgnoreCase("west") ||
+                s.equalsIgnoreCase("north west") || s.equalsIgnoreCase("up") || s.equalsIgnoreCase("down") ||
+                s.toLowerCase().contains("go");
     }
 
     /**
@@ -158,6 +161,7 @@ public class AndreAdventure {
             item = item.replace("get", "");
         if(item.contains("take"))
             item = item.replace("take", "");
+
         item = item.trim();
 
         // If the item exists, get it. Otherwise, let the player know
@@ -176,9 +180,14 @@ public class AndreAdventure {
      * @param item to look at
      */
     private void lookAtItem(String item){
+        // If we have look at, then let's remove it
         if(item.contains("look at"))
             item = item.replace("look at", "");
 
+        // Remove any white space
+        item = item.trim();
+
+        // Now look at the item.
         currentRoom.lookAt(item);
     }
 }

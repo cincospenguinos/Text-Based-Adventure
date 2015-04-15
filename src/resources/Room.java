@@ -50,7 +50,7 @@ public class Room {
         System.out.println("");
 
         for(Item i : items.values())
-            i.look();
+            System.out.println("There is a " + i.getItemName() + ".");
     }
 
     /**
@@ -141,13 +141,17 @@ public class Room {
      * @return Item - the item to take, or null
      */
     public Item takeItem(String itemName){
+        // If the item exists, we will run a couple of checks
         if(items.containsKey(itemName)) {
             Item i = items.get(itemName);
 
+            // If the item can't be taken, return null
             if(!i.canBeTaken())
                 return null;
 
-            return items.get(itemName);
+            // Otherwise, remove the item and return it.
+            items.remove(itemName);
+            return i;
         }
 
         return null;

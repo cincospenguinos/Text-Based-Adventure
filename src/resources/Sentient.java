@@ -32,7 +32,7 @@ public abstract class Sentient {
      * Instantiates all the objects for this Sentient
      */
     protected void instantiate(String _name){
-        inventory = new HashMap<String, Item>();
+        inventory = new HashMap<>();
         name = _name;
     }
 
@@ -57,6 +57,19 @@ public abstract class Sentient {
      * Talks to this sentient.
      */
     public abstract void talk();
+
+    /**
+     * Attacks the sentient passed.
+     * @param s - The Sentient to attack
+     * @return true if the attak hits.
+     */
+    public boolean attack(Sentient s){
+        if(Math.random() < toHit) {
+            s.takeDamage((int)(Math.random() * 10));
+            return true;
+        } else
+            return false;
+    }
 
     /**
      * Takes the amount of damage passed in, using defense in the
