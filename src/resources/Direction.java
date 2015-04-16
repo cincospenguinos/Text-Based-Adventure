@@ -1,7 +1,7 @@
 package resources;
 
 /**
- * Created by andrelafleur on 4/9/15.
+ * An enumeration representing the directions a player may go.
  */
 public enum Direction {
     NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST, UP, DOWN;
@@ -44,27 +44,70 @@ public enum Direction {
         if(s.contains("go"))
             s = s.replace("go", "");
 
-        if(s.equals("n") || s.equals("north"))
-            return NORTH;
-        else if(s.equals("ne") || s.equals("north east"))
-            return NORTH_EAST;
-        else if(s.equals("e") || s.equals("east"))
-            return EAST;
-        else if(s.equals("se") || s.equals("south east"))
-            return SOUTH_EAST;
-        else if(s.equals("s") || s.equals("south"))
-            return SOUTH;
-        else if(s.equals("sw") || s.equals("south west"))
-            return SOUTH_WEST;
-        else if(s.equals("w") || s.equals("west"))
-            return WEST;
-        else if(s.equals("nw") || s.equals("north west"))
-            return NORTH_WEST;
-        else if(s.equals("up"))
-            return UP;
-        else if(s.equals("down"))
-            return DOWN;
+        switch (s) {
+            case "n":
+            case "north":
+                return NORTH;
+            case "ne":
+            case "north east":
+                return NORTH_EAST;
+            case "e":
+            case "east":
+                return EAST;
+            case "se":
+            case "south east":
+                return SOUTH_EAST;
+            case "s":
+            case "south":
+                return SOUTH;
+            case "sw":
+            case "south west":
+                return SOUTH_WEST;
+            case "w":
+            case "west":
+                return WEST;
+            case "nw":
+            case "north west":
+                return NORTH_WEST;
+            case "up":
+                return UP;
+            case "down":
+                return DOWN;
+        }
 
         return null;
+    }
+
+    /**
+     * Returns the opposite direciton of the direction passed into this method.
+     *
+     * @param d - Direction to get the opposite of
+     * @return Opposite direction of the direction passed.
+     */
+    public static Direction oppositeDirection(Direction d){
+        switch(d){
+            case NORTH:
+                return SOUTH;
+            case NORTH_EAST:
+                return SOUTH_WEST;
+            case EAST:
+                return WEST;
+            case SOUTH_EAST:
+                return NORTH_WEST;
+            case SOUTH:
+                return NORTH;
+            case SOUTH_WEST:
+                return NORTH_EAST;
+            case WEST:
+                return EAST;
+            case NORTH_WEST:
+                return SOUTH_EAST;
+            case UP:
+                return DOWN;
+            case DOWN:
+                return UP;
+            default:
+                return null;
+        }
     }
 }

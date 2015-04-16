@@ -104,9 +104,12 @@ public class Room {
     public List<Sentient> getHostileSentients(){
         ArrayList<Sentient> list = new ArrayList<>();
 
+        // First get all the hostile sentients
         for(Sentient s : sentients.values())
             if(s.isHostile())
                 list.add(s);
+
+        // If one of them happens to be dead, remove it, and turn it into an item
 
         return list;
     }
@@ -131,18 +134,24 @@ public class Room {
     }
 
     /**
-     * Adds the connection desired, unless the direction already exists in the collection. Otherwise,
-     * this method throws a DirectionExistsException.
+     * Adds a connection between this room and the room passed, but also creates
+     * a connection back from that room to this room.
      *
-     * @param d - Direction to connect this room to
-     * @param r - Room to be connected to this one.
-     * @throws DirectionExistsException
+     * @param d - Direction to the new room
+     * @param r - Room to be connected
      */
-    public void addConnection(Direction d, Room r) throws DirectionExistsException {
-        if(connectedRooms.containsKey(d))
-            throw new DirectionExistsException("Direction " + d +
-                    " already exists in the collection of connections.");
+    public void addTwoWayConnection(Direction d, Room r){
+        addOneWayConnection(d, r); // Add a connection from this room to r
+        r.addOneWayConnection(Direction.oppositeDirection(d), this); // Add a connection from r to this room
+    }
 
+    /**
+     * Adds a single connection from this room to the room passed.
+     *
+     * @param d - Direciton of the new room
+     * @param r - Room that will be connected
+     */
+    public void addOneWayConnection(Direction d, Room r){
         connectedRooms.put(d, r);
     }
 

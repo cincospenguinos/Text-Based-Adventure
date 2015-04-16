@@ -105,14 +105,10 @@ public class Sentient {
      */
     public void takeDamage(int damage){
         if(defense - damage < 0)
-            currentHitPoints -= (defense - damage);
+            currentHitPoints += (defense - damage);
 
         if(currentHitPoints <= 0)
             isDead = true;
-
-        System.out.println("DAMAGE DEALT: " + (defense - damage));
-        System.out.println("CURRENT HP: " + currentHitPoints);
-        System.out.println("IS HE CURRENTLY DEAD: " + isDead);
     }
 
     /**

@@ -10,6 +10,8 @@ public class Player extends Sentient {
 
     private int score;
 
+    // TODO: Figure out what to do about weapons
+
     public Player(String _name){
         super(_name, 10, 3, 3, 0.5, false);
 

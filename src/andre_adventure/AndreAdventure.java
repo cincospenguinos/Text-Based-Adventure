@@ -18,10 +18,9 @@ public class AndreAdventure {
 
     public AndreAdventure() {
         // Create the player
+        player = new Player("Player");
+
         input = new Scanner(System.in);
-        System.out.println("Please insert name (you will be able to change this later):");
-        player = new Player(input.nextLine());
-        player.addToScore(-1); // because one will be added when the game starts.
 
         // Now let's create all the rooms and add the necessary items.
         Room apartment = new Room("Apartment", "You are in an apartment. " +
@@ -42,11 +41,8 @@ public class AndreAdventure {
 
         // Now let's add the connections:
         try{
-            apartment.addConnection(Direction.NORTH, outside);
-            outside.addConnection(Direction.SOUTH, apartment);
-
-            apartment.addConnection(Direction.SOUTH, shrine);
-            shrine.addConnection(Direction.NORTH, apartment);
+            apartment.addTwoWayConnection(Direction.SOUTH, shrine);
+            apartment.addTwoWayConnection(Direction.NORTH, outside);
         } catch(Exception e){
             System.err.println("A connection exists already!");
             System.exit(1);
@@ -81,6 +77,7 @@ public class AndreAdventure {
 
             for(Sentient s : enemies) {
                 System.out.println("You are attacked by " + s.getName() + ".");
+
                 if(s.attack(player)){
                     System.out.println("You have been hit.");
                     player.checkHealth();
@@ -108,7 +105,7 @@ public class AndreAdventure {
             else if(command.contains("look at"))
                 lookAtItem(command);
 
-            else if(command.equals("inv"))
+            else if(command.equals("inv") || command.equals("inventory"))
                 player.showInventory();
 
             else if(command.equals("score"))
@@ -152,7 +149,7 @@ public class AndreAdventure {
         System.out.println("drop [item] - drops the item from the inventory");
         System.out.println("look - shows what the current area looks like");
         System.out.println("look at [item] - describes the item in the current area");
-        System.out.println("inv - displays the inventory");
+        System.out.println("inventory - displays the player's inventory");
         System.out.println("score - displays your current score");
     }
 

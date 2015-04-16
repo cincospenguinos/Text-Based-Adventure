@@ -17,6 +17,8 @@ public class Item {
     // Indicates whether this item can be taken or not.
     private boolean canBeTaken;
 
+    // TODO: Figure out looting corpses
+
     public Item(String _itemName, String _description){
         itemName = _itemName;
         quantity = 1;
@@ -28,6 +30,13 @@ public class Item {
         itemName = _itemName;
         description = _description;
         canBeTaken = _canBeTaken;
+    }
+
+    public Item(Sentient s){
+        itemName = s.getName() + " Corpse";
+        description = "This is the corpse of " + s.getName();
+        canBeTaken = false;
+        quantity = 1;
     }
 
     /**
