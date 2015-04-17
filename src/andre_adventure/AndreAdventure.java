@@ -36,12 +36,43 @@ public class AndreAdventure {
         shrine.addItem(new Item("Inscription", "The inscription says " +
                 "\"One iron loaf and one basin of water will summon the great ruler.\"", false));
 
+        Room bakery = new Room("Bakery", "You are inside of an old bakery. Chairs and tables are thrown all over the" +
+                "ground, broken and forgotten.");
+        bakery.addItem(new Item("Old Baguette", "The old baguette is cold and hard like iron. You better not eat it."));
+
+        Room mazeA = new Room("Forest Maze", "You are in a forest, with twisty corners and trees surrounding you.");
+        Room mazeB = new Room("Forest Maze", "You are in a forest, with twisty corners and trees surrounding you.");
+        Room mazeC = new Room("Forest Maze", "You are in a forest, with twisty corners and trees surrounding you.");
+        Room mazeD = new Room("Forest Maze", "You are in a forest, with twisty corners and trees surrounding you.");
+
+        Room bowlLocation = new Room("Shrine", "You find a small stone shrine before you.");
+        bowlLocation.addItem(new Item("Bowl Inscription", "The inscription says \"TAKE ME PLEASE\".", false));
+        bowlLocation.addItem(new Item("Dog Bowl", "A small clay bowl with small imprints of dog paws all around it."));
+
         // TODO: Create more rooms and populate them.
 
         // Now let's add the connections:
         try{
             apartment.addTwoWayConnection(Direction.SOUTH, shrine);
             apartment.addTwoWayConnection(Direction.NORTH, outside);
+
+            outside.addTwoWayConnection(Direction.EAST, bakery);
+
+            bakery.addTwoWayConnection(Direction.EAST, mazeA);
+
+            mazeA.addOneWayConnection(Direction.SOUTH, mazeB);
+
+            mazeB.addOneWayConnection(Direction.SOUTH, mazeB);
+            mazeB.addOneWayConnection(Direction.NORTH, mazeD);
+            mazeB.addOneWayConnection(Direction.WEST, mazeC);
+
+            mazeC.addOneWayConnection(Direction.EAST, mazeA);
+            mazeC.addOneWayConnection(Direction.SOUTH, mazeB);
+            mazeC.addOneWayConnection(Direction.SOUTH_EAST, bowlLocation);
+
+            mazeD.addOneWayConnection(Direction.NORTH_WEST, mazeA);
+
+            bowlLocation.addOneWayConnection(Direction.NORTH, bakery);
         } catch(Exception e){
             System.err.println("A connection exists already!");
             System.exit(1);
@@ -98,6 +129,9 @@ public class AndreAdventure {
             else if(command.contains("take") || command.contains("get"))
                 takeItem(command);
 
+            else if(command.contains("drop"))
+                dropItem(command);
+
             else if(command.equals("look"))
                 currentRoom.look();
 
@@ -153,6 +187,7 @@ public class AndreAdventure {
         System.out.println("look at [item] - describes the item in the current area");
         System.out.println("inventory - displays the player's inventory");
         System.out.println("score - displays your current score");
+        System.out.println("use - uses the item requested");
     }
 
     /**
@@ -191,6 +226,24 @@ public class AndreAdventure {
         }
         else
             System.out.println("You cannot take that.");
+    }
+
+    /**
+     * Drop the item passed.
+     *
+     * @param item - Item to be dropped
+     */
+    private void dropItem(String item) {
+        item = item.replace("drop ", "");
+        item = item.trim();
+
+        Item i = player.dropItem(item);
+
+        if(i != null) {
+            currentRoom.addItem(i);
+            System.out.println("Dropped.");
+        } else
+            System.out.println("You don't have that item.");
     }
 
     /**
