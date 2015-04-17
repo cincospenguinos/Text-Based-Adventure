@@ -2,6 +2,7 @@ package andre_adventure;
 
 import java.util.Scanner;
 import java.util.List;
+import java.util.HashMap;
 import resources.*;
 
 /**
@@ -12,7 +13,10 @@ public class AndreAdventure {
     private Player player;
 
     private Room currentRoom;
+
     private List<Sentient> enemies;
+
+    private HashMap<Item, Room> itemsToRooms;
 
     private Scanner input;
 
@@ -21,11 +25,18 @@ public class AndreAdventure {
         player = new Player("Player");
         input = new Scanner(System.in);
 
+        itemsToRooms = new HashMap<>();
+
+        // First we'll make all the necessary items
+        Weapon machete = new Weapon("Machete", "A steel machete that says \"Made in Brazil\" on the blade.", 0.25, 3);
+        Item oldBaguette = new Item("Old Baguette", "The old baguette is cold and hard like iron. You better not eat it.");
+        Item dogBowl = new Item("Dog Bowl", "A small clay bowl with small imprints of dog paws all around it.");
+
         // Now let's create all the rooms and add the necessary items.
         Room apartment = new Room("Apartment", "You are in an apartment. " +
                 "Everything inside has been scraped out, with paint chipping off the walls. The floor has a thin " +
                 "layer of carpet.");
-        apartment.addItem(new Weapon("Machete", "A steel machete that says \"Made in Brazil\" on the blade.", 0.25, 3));
+        apartment.addItem(machete);
 
         Room outside = new Room("Outside", "You are outside. The moonlight reflects " +
                 "off of the windows upon the building surrounding you.");
@@ -38,7 +49,7 @@ public class AndreAdventure {
 
         Room bakery = new Room("Bakery", "You are inside of an old bakery. Chairs and tables are thrown all over the" +
                 "ground, broken and forgotten.");
-        bakery.addItem(new Item("Old Baguette", "The old baguette is cold and hard like iron. You better not eat it."));
+        bakery.addItem(oldBaguette);
 
         Room mazeA = new Room("Forest Maze", "You are in a forest, with twisty corners and trees surrounding you.");
         Room mazeB = new Room("Forest Maze", "You are in a forest, with twisty corners and trees surrounding you.");
@@ -47,7 +58,11 @@ public class AndreAdventure {
 
         Room bowlLocation = new Room("Shrine", "You find a small stone shrine before you.");
         bowlLocation.addItem(new Item("Bowl Inscription", "The inscription says \"TAKE ME PLEASE\".", false));
-        bowlLocation.addItem(new Item("Dog Bowl", "A small clay bowl with small imprints of dog paws all around it."));
+        bowlLocation.addItem(dogBowl);
+
+        // Now let's set the usable items up in the various rooms
+        itemsToRooms.put(oldBaguette, shrine);
+        itemsToRooms.put(dogBowl, shrine);
 
         // TODO: Create more rooms and populate them.
 
@@ -132,6 +147,9 @@ public class AndreAdventure {
             else if(command.contains("drop"))
                 dropItem(command);
 
+            else if(command.contains("use"))
+                useItem(command);
+
             else if(command.equals("look"))
                 currentRoom.look();
 
@@ -150,8 +168,6 @@ public class AndreAdventure {
             else if(command.contains("attack"))
                 attack(command);
 
-            else if(command.equals("help") || command.equals("?"))
-                showHelp();
             else
                 System.out.println("I don't understand that.");
         }
@@ -188,6 +204,7 @@ public class AndreAdventure {
         System.out.println("inventory - displays the player's inventory");
         System.out.println("score - displays your current score");
         System.out.println("use - uses the item requested");
+        System.out.println("equip - equips the item requested");
     }
 
     /**
@@ -226,6 +243,42 @@ public class AndreAdventure {
         }
         else
             System.out.println("You cannot take that.");
+    }
+
+    /**
+     * Uses the item requested in the current room.
+     *
+     * @param item - Item to use on the current room
+     */
+    private void useItem(String item){
+        item = item.replace("use ", "");
+        item = item.trim();
+
+        Item i = player.getItem(item);
+
+        if(i == null) {
+            System.out.println("You do not have that item.");
+            return;
+        }
+
+        // If the item requested does have a connection to the current room, then we will do something.
+        if(itemsToRooms.get(i) == currentRoom){
+            // We don't have to worry what room it is because we are only allowing two items to be useable
+            // in one room.
+            if(i.getItemName().toLowerCase().equals("dog bowl")){
+                // First, drop the item
+                currentRoom.addItem(player.dropItem(item));
+                System.out.println("You placed the dog bowl before the shrine.");
+                checkEndGame();
+                return;
+            } else if (i.getItemName().toLowerCase().equals("old baguette")){
+                currentRoom.addItem(player.dropItem(item));
+                System.out.println("You placed the old baguette before the shrine.");
+                checkEndGame();
+                return;
+            }
+        }
+            System.out.println("You cannot use that here.");
     }
 
     /**
@@ -313,7 +366,29 @@ public class AndreAdventure {
             System.out.println("You missed the enemy.");
     }
 
-    public void exit(){
+    private void checkEndGame(){
+        // TODO: Implement this
+        if(currentRoom.hasItem("dog bowl") && currentRoom.hasItem("old baguette")){
+            System.out.println("You hear a low rumbling in the distance. It comes nearer and nearer, closer and closer.\n");
+            System.out.print(">");
+            input.nextLine();
+            System.out.println("It comes nearer and nearer, louder and louder, until you can't bear it...\n");
+            System.out.print(">");
+            input.nextLine();
+            System.out.println("When you think you can't take it anymore, a yellow lab appears, walking from behind the");
+            System.out.println("large shrine. She walks up to you, sniffs the bread, picks it up in its mouth and walks");
+            System.out.println("away.\n");
+            System.out.print("> ");
+            input.nextLine();
+            System.out.println("Yes, that is the end of the game.");
+            System.out.println("YOUR SCORE: " + player.getScore());
+            input.nextLine();
+            input.close();
+            System.exit(0);
+        }
+    }
+
+    private void exit(){
         input.close();
         System.exit(0);
     }

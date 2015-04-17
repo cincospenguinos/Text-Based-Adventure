@@ -31,6 +31,10 @@ public class Player extends Sentient {
      */
     public void equipWeapon(String weaponName){
         if(hasItem(weaponName)) {
+            if(!(getItem(weaponName) instanceof Weapon)){
+                System.out.println("That cannot be equipped.");
+                return;
+            }
             equippedWeapon = (Weapon)getItem(weaponName);
             applyToHitBonus(equippedWeapon.getToHitBonus());
             applyDamageBonus(equippedWeapon.getDamageBonus());

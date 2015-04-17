@@ -6,6 +6,9 @@ import java.util.HashMap;
 
 /**
  * Abstract class representing a room for a text-only adventure game.
+ *
+ * TODO: Solve the usable items problem
+ *
  */
 public class Room {
 
@@ -50,7 +53,7 @@ public class Room {
         System.out.println("");
 
         for(Item i : items.values())
-            System.out.println("There is a " + i.getItemName() + ".");
+            System.out.println("There is a " + i.getItemName().toLowerCase() + ".");
     }
 
     /**
@@ -215,13 +218,7 @@ public class Room {
         return visited;
     }
 
-    /**
-     * Class meant to help debugging.
-     */
-    private class DirectionExistsException extends Exception {
-
-        private DirectionExistsException(String reason){
-            super(reason);
-        }
+    public boolean hasItem(String itemName){
+        return items.containsKey(itemName);
     }
 }
