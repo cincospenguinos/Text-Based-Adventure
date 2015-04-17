@@ -19,18 +19,17 @@ public class AndreAdventure {
     public AndreAdventure() {
         // Create the player
         player = new Player("Player");
-
         input = new Scanner(System.in);
 
         // Now let's create all the rooms and add the necessary items.
         Room apartment = new Room("Apartment", "You are in an apartment. " +
                 "Everything inside has been scraped out, with paint chipping off the walls. The floor has a thin " +
                 "layer of carpet.");
-        apartment.addItem(new Item("Machete", "A steel machete that says \"Made in Brazil\" on the blade."));
+        apartment.addItem(new Weapon("Machete", "A steel machete that says \"Made in Brazil\" on the blade.", 0.25, 3));
 
         Room outside = new Room("Outside", "You are outside. The moonlight reflects " +
                 "off of the windows upon the building surrounding you.");
-        outside.addSentient(new Sentient("Mean Bird", 4, 1, 2, 0.3, true)); // An enemy - a mean bird
+        outside.addSentient(new Sentient("Mean Bird", 5, 2, 2, 0.3, true)); // An enemy - a mean bird
 
         Room shrine = new Room("Shrine", "You find yourself in front of a grand and majestic shrine. There seems to " +
                 "be an inscription upon the base of it.");
@@ -110,6 +109,9 @@ public class AndreAdventure {
 
             else if(command.equals("score"))
                 System.out.println("Your score: " + player.getScore());
+
+            else if(command.contains("equip"))
+                equipItem(command);
 
             else if(command.contains("attack"))
                 attack(command);
@@ -209,6 +211,18 @@ public class AndreAdventure {
     }
 
     /**
+     * Equips the weapon requested.
+     *
+     * @param weapon - String weapon name
+     */
+    private void equipItem(String weapon){
+        weapon = weapon.replace("equip ", "");
+        weapon = weapon.trim();
+
+        player.equipWeapon(weapon);
+    }
+
+    /**
      * Manages attacking an enemy
      */
     private void attack(String enemy){
@@ -244,5 +258,10 @@ public class AndreAdventure {
         }
         else
             System.out.println("You missed the enemy.");
+    }
+
+    public void exit(){
+        input.close();
+        System.exit(0);
     }
 }

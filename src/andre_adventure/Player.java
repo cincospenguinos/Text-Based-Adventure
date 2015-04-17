@@ -8,14 +8,44 @@ import resources.Item;
  */
 public class Player extends Sentient {
 
+    // The current score of the player
     private int score;
+
+    // The current equipped weapon
+    private Weapon equippedWeapon;
 
     // TODO: Figure out what to do about weapons
 
     public Player(String _name){
         super(_name, 10, 3, 3, 0.5, false);
+        equippedWeapon = null;
 
         score = 0;
+    }
+
+    /**
+     * Equips the weapon requested. Note that the weapon must be in the player's inventory
+     * before it can be equipped.
+     *
+     * @param weaponName - Weapon to be equipped.
+     */
+    public void equipWeapon(String weaponName){
+        if(hasItem(weaponName)) {
+            equippedWeapon = (Weapon)getItem(weaponName);
+            applyToHitBonus(equippedWeapon.getToHitBonus());
+            applyDamageBonus(equippedWeapon.getDamageBonus());
+            System.out.println("Equipped.");
+        } else
+            System.out.println("You don't seem to have that weapon.");
+    }
+
+    /**
+     * Unequipes the weapon currently held by the Player.
+     */
+    public void unequipWeapon(){
+        equippedWeapon = null;
+        removeDamageBonus();
+        removeToHitBonus();
     }
 
     /**

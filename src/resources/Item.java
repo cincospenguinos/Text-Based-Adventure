@@ -1,5 +1,7 @@
 package resources;
 
+import java.util.Collection;
+
 /**
  * Item class - represents an item of some sort in a command line text adventure game.
  */
@@ -17,6 +19,9 @@ public class Item {
     // Indicates whether this item can be taken or not.
     private boolean canBeTaken;
 
+    // If this item is actually a corpse, then this will not be null
+    private Sentient corpse;
+
     // TODO: Figure out looting corpses
 
     public Item(String _itemName, String _description){
@@ -24,12 +29,14 @@ public class Item {
         quantity = 1;
         description = _description;
         canBeTaken = true;
+        corpse = null;
     }
 
     public Item(String _itemName, String _description, boolean _canBeTaken){
         itemName = _itemName;
         description = _description;
         canBeTaken = _canBeTaken;
+        corpse = null;
     }
 
     public Item(Sentient s){
@@ -37,6 +44,7 @@ public class Item {
         description = "This is the corpse of " + s.getName();
         canBeTaken = false;
         quantity = 1;
+        corpse = s;
     }
 
     /**
@@ -53,6 +61,13 @@ public class Item {
      */
     public void use(){
 
+    }
+
+    public Collection<Item> lootCorpse(){
+        if(corpse == null)
+            return null;
+
+        return corpse.getInventory();
     }
 
     public String toString(){

@@ -2,7 +2,6 @@ package resources;
 
 import java.util.List;
 import java.util.ArrayList;
-
 import java.util.HashMap;
 
 /**
@@ -105,11 +104,14 @@ public class Room {
         ArrayList<Sentient> list = new ArrayList<>();
 
         // First get all the hostile sentients
-        for(Sentient s : sentients.values())
-            if(s.isHostile())
+        for(Sentient s : sentients.values()) {
+            if(s.isDead()){ // If a sentient is dead, then drop him from the list.
+                Corpse c = new Corpse(s);
+                items.put(c.getItemName(), c);
+                sentients.remove(s.getName().toLowerCase());
+            } else if (s.isHostile())
                 list.add(s);
-
-        // If one of them happens to be dead, remove it, and turn it into an item
+        }
 
         return list;
     }

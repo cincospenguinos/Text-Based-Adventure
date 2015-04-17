@@ -1,6 +1,7 @@
 package resources;
 
 import java.util.HashMap;
+import java.util.Collection;
 
 /**
  * Representation of a Sentient in a text based adventure game.
@@ -22,8 +23,14 @@ public class Sentient {
     // Double value representing the chance of hitting this sentient.
     private double toHit;
 
+    // The bonus applied toHit - often from holding a weapon
+    private double toHitBonus;
+
     // The amount of guaranteed damage that this Sentient will do
     private int damage;
+
+    // The bonus applied to damage - often from holding a weapon
+    private int damageBonus;
 
     // True if this Sentient is dead - that is, when HP <= 0
     private boolean isDead;
@@ -61,7 +68,30 @@ public class Sentient {
      * @param i - Item to add
      */
     public void addItem(Item i){
-        inventory.put(i.toString().toLowerCase(), i);
+        inventory.put(i.getItemName().toLowerCase(), i);
+    }
+
+    /**
+     * Returns true if the Sentient has the item matching the name passed.
+     *
+     * @param itemName - String name of the item
+     * @return true if the item is held by the Sentient
+     */
+    public boolean hasItem(String itemName){
+        return inventory.keySet().contains(itemName);
+    }
+
+    /**
+     * Returns whatever item is requested, or null if the item does not exist in the
+     * inventory.
+     * @param itemName - Name of the item to get
+     * @return null or an Item object
+     */
+    public Item getItem(String itemName){
+        if(!hasItem(itemName))
+            return null;
+
+        return inventory.get(itemName);
     }
 
     /**
@@ -70,7 +100,7 @@ public class Sentient {
      * @return null or the item that is to be dropped
      */
     public Item dropItem(String itemName) {
-        if (inventory.containsKey(itemName.toLowerCase()))
+        if (hasItem(itemName))
             return inventory.remove(itemName);
 
         return null;
@@ -125,6 +155,41 @@ public class Sentient {
     }
 
     /**
+     * Applies the bonus passed to the toHit score
+     * @param bonus - The bonus to apply
+     */
+    public void applyToHitBonus(double bonus){
+        toHitBonus = bonus;
+        toHit += toHitBonus;
+    }
+
+    /**
+     * Removes the to-hit bonus
+     */
+    public void removeToHitBonus(){
+        toHit -= toHitBonus;
+        toHitBonus = 0;
+    }
+
+    /**
+     * Applies the bonus passed to the damage score
+     *
+     * @param bonus - Bonus to apply to damage
+     */
+    public void applyDamageBonus(int bonus){
+        damageBonus = bonus;
+        damage += damageBonus;
+    }
+
+    /**
+     * Remove the bonus to damage.
+     */
+    public void removeDamageBonus(){
+        damage -= damageBonus;
+        damageBonus = 0;
+    }
+
+    /**
      * Returns true if this Sentient is dead.
      *
      * @return true if this sentient is dead.
@@ -145,5 +210,9 @@ public class Sentient {
 
     public int getCurrentHitPoints(){
         return currentHitPoints;
+    }
+
+    public Collection<Item> getInventory(){
+        return inventory.values();
     }
 }
