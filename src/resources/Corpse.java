@@ -1,7 +1,6 @@
 package resources;
 
-import resources.Item;
-import resources.Sentient;
+import java.util.Collection;
 
 /**
  * Represents the corpse of some sentient. Sentient corpse is considered an item rather than a
@@ -9,7 +8,19 @@ import resources.Sentient;
  */
 public class Corpse extends Item {
 
+    private Sentient corpse;
+
     public Corpse(Sentient s){
         super(s);
+        corpse = s;
+    }
+
+    /**
+     * Returns the the inventory of the corpse.
+     *
+     * @return Collection of items that this corpse has.
+     */
+    public Collection<Item> lootCorpse(){
+        return corpse.getInventory();
     }
 }
