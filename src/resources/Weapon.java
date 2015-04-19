@@ -1,4 +1,4 @@
-package andre_adventure;
+package resources;
 
 import resources.Item;
 

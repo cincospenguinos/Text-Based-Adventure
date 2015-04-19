@@ -1,7 +1,7 @@
 package andre_adventure;
 
 import resources.Sentient;
-import resources.Item;
+import resources.Weapon;
 
 /**
  * Represents a Player in Andre's first Text Adventure.
@@ -21,26 +21,6 @@ public class Player extends Sentient {
         equippedWeapon = null;
 
         score = 0;
-    }
-
-    /**
-     * Equips the weapon requested. Note that the weapon must be in the player's inventory
-     * before it can be equipped.
-     *
-     * @param weaponName - Weapon to be equipped.
-     */
-    public void equipWeapon(String weaponName){
-        if(hasItem(weaponName)) {
-            if(!(getItem(weaponName) instanceof Weapon)){
-                System.out.println("That cannot be equipped.");
-                return;
-            }
-            equippedWeapon = (Weapon)getItem(weaponName);
-            applyToHitBonus(equippedWeapon.getToHitBonus());
-            applyDamageBonus(equippedWeapon.getDamageBonus());
-            System.out.println("Equipped.");
-        } else
-            System.out.println("You don't seem to have that weapon.");
     }
 
     /**

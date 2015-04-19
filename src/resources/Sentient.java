@@ -41,6 +41,9 @@ public class Sentient {
     // The inventory of this Sentient
     private HashMap<String, Item> inventory;
 
+    // The weapon that is currently equipped
+    private Weapon equippedWeapon;
+
     public Sentient(String _name, int hitPoints, int _defense, int _damage, double _toHit, boolean _isHostile){
         name = _name;
         currentHitPoints = hitPoints;
@@ -52,14 +55,8 @@ public class Sentient {
         isDead = false;
 
         inventory = new HashMap<>();
-    }
 
-    /**
-     * Instantiates all the objects for this Sentient
-     */
-    protected void instantiate(String _name){
-        inventory = new HashMap<>();
-        name = _name;
+        equippedWeapon = null;
     }
 
     /**
@@ -104,6 +101,34 @@ public class Sentient {
             return inventory.remove(itemName);
 
         return null;
+    }
+
+    /**
+     * Equips the weapon matching the name passed. This method returns true if the
+     * weapon was equipped, or false if the method was not equipped.
+     *
+     * @param weaponName - String name of weapon to equip
+     * @return true if the weapon was equipped
+     */
+    public boolean equipWeapon(String weaponName){
+        Item i;
+        if(inventory.containsKey(weaponName) && (i = inventory.get(weaponName)) instanceof Weapon){
+            // First we will unequip the current weapon
+            equippedWeapon = (Weapon)i;
+            toHit -= toHitBonus;
+            damage -= damageBonus;
+
+            // Manage the to hit bonus
+            toHitBonus = equippedWeapon.getToHitBonus();
+            toHit += toHitBonus;
+
+            // Manage the damage bonus
+            damageBonus = equippedWeapon.getDamageBonus();
+            damage += damageBonus;
+
+            return true;
+        } else
+            return false;
     }
 
     /**
