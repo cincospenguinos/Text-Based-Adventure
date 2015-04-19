@@ -1,4 +1,4 @@
-package resources.player;
+package resources;
 
 /**
  * Interface representing a magician or someone who can use magic.
