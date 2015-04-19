@@ -64,8 +64,6 @@ public class AndreAdventure {
         itemsToRooms.put(oldBaguette, shrine);
         itemsToRooms.put(dogBowl, shrine);
 
-        // TODO: Create more rooms and populate them.
-
         // Now let's add the connections:
         try{
             apartment.addTwoWayConnection(Direction.SOUTH, shrine);
@@ -169,7 +167,7 @@ public class AndreAdventure {
                 attack(command);
 
             else
-                System.out.println("I don't understand that.");
+                System.out.println("I don't understand that. Type \"help\" or \"?\" for help.gr");
         }
 
         input.close();
