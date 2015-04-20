@@ -12,6 +12,8 @@ public class PracticeAdventureOne {
 
     private Scanner input;
 
+    private Sentient player;
+
     private Room currentRoom;
 
     /*
@@ -24,6 +26,8 @@ public class PracticeAdventureOne {
 
     public PracticeAdventureOne(){
         input = new Scanner(System.in);
+
+        player = new Sentient("Player", 10, 3, 3, 0.5, false);
 
         // All of the rooms that we will be populating
         Room apartment = new Room("Apartment", "You are in an apartment. The entire apartment is bare, with paint chipping off" +
@@ -68,7 +72,6 @@ public class PracticeAdventureOne {
             System.out.println(currentRoom.getPublicName() + "\n");
             if(!currentRoom.isVisited()){
                 look(currentRoom);
-//                player.addToScore(1); // one point for exploring a new room
                 currentRoom.visit();
             }
 
@@ -77,6 +80,12 @@ public class PracticeAdventureOne {
 
             if(command.equals("exit") || command.equals("quit"))
                 break;
+            else if(command.equals("help") || command.equals("?"))
+                help();
+            else if(command.contains("take") || command.contains("grab") || command.contains("get"))
+                takeItem(command);
+            else if(command.contains("talk"))
+                talkTo(command);
         }
 
         input.close();
@@ -107,5 +116,79 @@ public class PracticeAdventureOne {
         }
 
         System.out.println();
+    }
+
+    /**
+     * Displays the list of commands
+     */
+    private void help(){
+        System.out.println("***** LIST OF COMMANDS *****");
+        System.out.println("help/? - Displays this menu");
+        System.out.println("go [direction] - Goes in that direction");
+        System.out.println("take [item] - takes the item requested");
+        System.out.println("drop [item] - drops the item from the inventory");
+        System.out.println("look - shows what the current area looks like");
+        System.out.println("look at [item] - describes the item in the current area");
+        System.out.println("inventory - displays the player's inventory");
+        System.out.println("score - displays your current score");
+        System.out.println("use - uses the item requested");
+        System.out.println("equip - equips the item requested");
+    }
+
+    /**
+     * Takes the item requested.
+     *
+     * @param item - String name of item to take
+     */
+    private void takeItem(String item){
+        item = item.replace("take ", "");
+        item = item.replace("grab ", "");
+        item = item.replace("get ", "");
+
+        if(item.isEmpty()){
+            System.out.println("Take what?");
+            return;
+        }
+
+        if(currentRoom.hasItem(item)){
+            player.addItem(currentRoom.takeItem(item));
+            System.out.println("Taken.");
+            return;
+        }
+
+        System.out.println("That item does not seem to be here.");
+    }
+
+    /**
+     * Shows the dialog to talk to the sentient passed, or does nothing if there is no-one to talk
+     * to.
+     *
+     * @param sentient  - Sentient to talk to
+     */
+    private void talkTo(String sentient){
+        // Check to see if there is someone to talk to
+        if(currentRoom.getSentients().size() == 0){
+            System.out.println("There is no one to talk to.");
+            return;
+        }
+
+        // Ensure we have nothing but the name
+        sentient = sentient.replace("talk ", "");
+        sentient = sentient.replace("to ", "");
+
+        // If there is someone, check to see if it's the person requested
+        if(currentRoom.hasSentient(sentient)){
+            Sentient s = currentRoom.getSentient(sentient);
+
+            // If it's the dog, the dialog is here.
+            if(s.getName().toLowerCase().equals("dog")){
+                System.out.println();
+            }
+
+            // If it's with the king, the dialog is here.
+            else if(s.getName().toLowerCase().equals("king")){
+                System.out.println();
+            }
+        }
     }
 }

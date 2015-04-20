@@ -195,11 +195,15 @@ public class Room {
     }
 
     public Collection<Item> getItems(){
-        return (Collection<Item>)items.values();
+        return items.values();
     }
 
     public Collection<Sentient> getSentients(){
-        return (Collection<Sentient>)sentients.values();
+        return sentients.values();
+    }
+
+    public boolean hasSentient(String sentientName){
+        return sentients.containsKey(sentientName);
     }
 
     public HashMap<Direction, Room> getRooms(){
