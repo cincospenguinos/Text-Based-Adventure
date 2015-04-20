@@ -79,19 +79,39 @@ public class PracticeAdventureOne {
             }
 
             // Get the command that needs to be parsed
-            String command = input.nextLine().toLowerCase();
+            String[] command = input.nextLine().toLowerCase().split(" ");
 
-            if(command.equals("exit") || command.equals("quit"))
-                break;
-            else if(command.equals("help") || command.equals("?"))
-                help();
-            else if(command.contains("take") || command.contains("grab") || command.contains("get"))
-                takeItem(command);
-            else if(command.contains("talk"))
-                talkTo(command);
+            switch(command[0]){
+                case "look":
+                    if(command.length == 1)
+                        look(currentRoom);
+                    // TODO: Implement "look at"
+
+                    break;
+                case "get":
+                case "take":
+                case "grab":
+                    if(command.length < 2) {
+                        System.out.println("Take what?");
+                        break;
+                    }
+                    // TODO: Implement "take"
+
+                    break;
+                case "talk":
+                    if(command.length < 2) {
+                        System.out.println("Talk to who?");
+                        break;
+                    }
+
+                case "exit":
+                case "quit":
+                    input.close();
+                    System.exit(0);
+                default:
+                    System.out.println("I don't understand that. Type \"help\" or \"?\" for help.");
+            }
         }
-
-        input.close();
     }
 
     /**
