@@ -16,6 +16,9 @@ public class PracticeAdventureOne {
 
     private Room currentRoom;
 
+    private boolean questEnabled;
+    private boolean isOrbCleansed;
+
     /*
     Some quick notes:
     - All the item use handling, description output, etcetera, will be handled in this class, instead of
@@ -182,13 +185,49 @@ public class PracticeAdventureOne {
 
             // If it's the dog, the dialog is here.
             if(s.getName().toLowerCase().equals("dog")){
-                System.out.println();
+                if(questEnabled){
+                    System.out.println("\"Please find my orb! I need it back really bad!\"");
+                    return;
+                }
+
+                System.out.println("The dog looks at you and says \"Hello there! Will you help me? I need someone to " +
+                        "get me my mystic orb. Can you do that for me?\"");
+
+                String response = input.nextLine().toLowerCase();
+
+                switch (response) {
+                    case "y":
+                    case "yes":
+                        System.out.println("\"Really!? Oh boy! I'm so glad you will! I promise I will repay you when I have it back!");
+                        questEnabled = true;
+                        break;
+                    case "n":
+                    case "no":
+                        System.out.println("\"Aww, man! Please come back and say yes if you change your mind...\"");
+                        break;
+                    default:
+                        System.out.println("\"'" + response + "'? I don't know what you're talking about.\"");
+                        break;
+                }
+
+                return;
             }
 
             // If it's with the king, the dialog is here.
             else if(s.getName().toLowerCase().equals("king")){
+                // TODO: Implement the king's dialog
                 System.out.println();
             }
         }
+
+        System.out.println("That person doesn't seem to be here to talk to.");
+    }
+
+    /**
+     * TODO: Write info about this method
+     * @param itemName - name of item to use
+     */
+    private void useItem(String itemName){
+        // TODO: Write this method
     }
 }
