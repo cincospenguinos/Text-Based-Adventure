@@ -1,13 +1,12 @@
 package resources;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Abstract class representing a room for a text-only adventure game.
- *
- * TODO: Solve the usable items problem
+ * A class representing a room for a text-only adventure game.
  *
  */
 public class Room {
@@ -42,38 +41,12 @@ public class Room {
     }
 
     /**
-     * Prints out the current look of the room.
-     */
-    public void look(){
-        System.out.println(description + "\n");
-
-        for(Direction d : connectedRooms.keySet())
-            System.out.println(connectedRooms.get(d).getPublicName() + " is to the " + d.toString() + ". ");
-
-        System.out.println("");
-
-        for(Item i : items.values())
-            System.out.println("There is a " + i.getItemName().toLowerCase() + ".");
-    }
-
-    /**
      * Drops the item passed into this room.
      *
      * @param item to drop
      */
     public void dropItem(Item item){
         items.put(item.getItemName(), item);
-    }
-
-    /**
-     * Initiates a conversation with that sentient, assuming the sentient is in
-     * the room. Otherwise, this method indicates that the sentient does not
-     * exist in the room.
-     *
-     * @param sentientName - name of the sentient to speak to
-     */
-    public void talkTo(String sentientName){
-        // TODO: Figure out this method
     }
 
     /**
@@ -117,18 +90,6 @@ public class Room {
         }
 
         return list;
-    }
-
-    /**
-     * Looks at the item matching the itemName passed.
-     *
-     * @param itemName - name of item to look at
-     */
-    public void lookAt(String itemName){
-        if(items.containsKey(itemName))
-            items.get(itemName).look();
-        else
-            System.out.println("That doesn't seem to exist here.");
     }
 
     /**
@@ -179,7 +140,7 @@ public class Room {
      * @param i - Item to add
      */
     public void addItem(Item i){
-        items.put(i.getItemName().toLowerCase().toLowerCase(), i);
+        items.put(i.getItemName().toLowerCase(), i);
     }
 
     /**
@@ -220,5 +181,28 @@ public class Room {
 
     public boolean hasItem(String itemName){
         return items.containsKey(itemName);
+    }
+
+    public Item getItem(String itemName){
+        if(items.containsKey(itemName))
+            return items.get(itemName);
+
+        return null;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Collection<Item> getItems(){
+        return (Collection<Item>)items.values();
+    }
+
+    public Collection<Sentient> getSentients(){
+        return (Collection<Sentient>)sentients.values();
+    }
+
+    public HashMap<Direction, Room> getRooms(){
+        return connectedRooms;
     }
 }

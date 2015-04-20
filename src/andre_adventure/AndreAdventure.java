@@ -167,7 +167,7 @@ public class AndreAdventure {
                 attack(command);
 
             else
-                System.out.println("I don't understand that. Type \"help\" or \"?\" for help.gr");
+                System.out.println("I don't understand that. Type \"help\" or \"?\" for help.");
         }
 
         input.close();

@@ -8,6 +8,7 @@ import java.util.Collection;
  */
 public class Corpse extends Item {
 
+    // The original sentient that was once this corpse
     private Sentient corpse;
 
     public Corpse(Sentient s){
@@ -20,7 +21,12 @@ public class Corpse extends Item {
      *
      * @return Collection of items that this corpse has.
      */
-    public Collection<Item> lootCorpse(){
-        return corpse.getInventory();
+    public Collection<Item> lootCorpse(){ return corpse.getInventory(); }
+
+    public Item getItem(String itemName) {
+        if (corpse.hasItem(itemName))
+            return corpse.dropItem(itemName); // dropItem() does what we would want "takeItem()" to do
+
+        return null;
     }
 }

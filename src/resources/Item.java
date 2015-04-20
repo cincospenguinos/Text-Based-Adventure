@@ -48,15 +48,6 @@ public class Item {
         System.out.println(description);
     }
 
-    /**
-     * Use the item.
-     *
-     * TODO: Implement this method somehow
-     */
-    public void use(){
-
-    }
-
     public String toString(){
         return quantity + " " + itemName;
     }
@@ -69,6 +60,14 @@ public class Item {
      */
     public String getItemName(){
         return itemName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String _description){
+        description = _description;
     }
 
     /**
