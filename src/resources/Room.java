@@ -23,14 +23,18 @@ public class Room {
     // The description of this room
     private String description;
 
-    // The name that will be given to the user
+    // The name that will be shown to the user
     private String publicName;
+
+    // The name that the engine will use to keep track of the room
+    private String engineName;
 
     // This is true if the room has been visited.
     private boolean visited;
 
-    public Room(String _publicName, String _description){
+    public Room(String _publicName, String _engineName, String _description){
         description = _description;
+        engineName = _engineName;
         publicName = _publicName;
 
         items = new HashMap<>();
@@ -208,5 +212,9 @@ public class Room {
 
     public HashMap<Direction, Room> getRooms(){
         return connectedRooms;
+    }
+
+    public String getEngineName(){
+        return engineName;
     }
 }
