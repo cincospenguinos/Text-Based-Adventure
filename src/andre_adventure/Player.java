@@ -17,7 +17,7 @@ public class Player extends Sentient {
     // TODO: Figure out what to do about weapons
 
     public Player(String _name){
-        super(_name, "It's you, silly!", 10, 3, 3, 0.5, false); // The description was added here to avoid compiler errors
+        super(_name, "It's you, silly!", 10, 0.5, 3, 3, 0.5, false); // The description was added here to avoid compiler errors
         equippedWeapon = null;
 
         score = 0;

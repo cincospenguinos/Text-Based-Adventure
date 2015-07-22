@@ -50,7 +50,7 @@ public class Room {
      * @param item to drop
      */
     public void dropItem(Item item){
-        items.put(item.getItemName(), item);
+        items.put(item.getPublicName(), item);
     }
 
     /**
@@ -87,7 +87,7 @@ public class Room {
         for(Sentient s : sentients.values()) {
             if(s.isDead()){ // If a sentient is dead, then drop him from the list.
                 Corpse c = new Corpse(s);
-                items.put(c.getItemName(), c);
+                items.put(c.getPublicName(), c);
                 sentients.remove(s.getName().toLowerCase());
             } else if (s.isHostile())
                 list.add(s);
@@ -144,7 +144,7 @@ public class Room {
      * @param i - Item to add
      */
     public void addItem(Item i){
-        items.put(i.getItemName().toLowerCase(), i);
+        items.put(i.getPublicName().toLowerCase(), i);
     }
 
     /**

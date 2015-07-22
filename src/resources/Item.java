@@ -1,14 +1,15 @@
 package resources;
 
-import java.util.Collection;
-
 /**
  * Item class - represents an item of some sort in a command line text adventure game.
  */
 public class Item {
 
     // The name of this item
-    private String itemName;
+    private String publicName;
+
+    // The name that the game engine will identify with
+    private String engineName;
 
     // The number of these there are
     private int quantity;
@@ -21,21 +22,23 @@ public class Item {
 
     // TODO: Figure out looting corpses
 
-    public Item(String _itemName, String _description){
-        itemName = _itemName;
+    public Item(String _publicName, String _engineName, String _description){
+        publicName = _publicName;
+        engineName = _engineName;
         quantity = 1;
         description = _description;
         canBeTaken = true;
     }
 
-    public Item(String _itemName, String _description, boolean _canBeTaken){
-        itemName = _itemName;
+    public Item(String _itemName, String _engineName, String _description, boolean _canBeTaken){
+        publicName = _itemName;
+        engineName = _engineName;
         description = _description;
         canBeTaken = _canBeTaken;
     }
 
     public Item(Sentient s){
-        itemName = "Corpse of " + s.getName();
+        publicName = "Corpse of " + s.getName();
         description = "This is the corpse of " + s.getName();
         canBeTaken = false;
         quantity = 1;
@@ -49,17 +52,17 @@ public class Item {
     }
 
     public String toString(){
-        return quantity + " " + itemName;
+        return quantity + " " + publicName;
     }
 
 
     /**
      * Returns the name of this item.
      *
-     * @return itemName - String name of this item.
+     * @return publicName - String name of this item.
      */
-    public String getItemName(){
-        return itemName;
+    public String getPublicName(){
+        return publicName;
     }
 
     public String getDescription() {
@@ -68,6 +71,14 @@ public class Item {
 
     public void setDescription(String _description){
         description = _description;
+    }
+
+    public String getEngineName() {
+        return engineName;
+    }
+
+    public void setEngineName(String engineName) {
+        this.engineName = engineName;
     }
 
     /**

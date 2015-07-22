@@ -1,9 +1,6 @@
 package resources;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Engine
@@ -34,6 +31,9 @@ public class Engine {
     // The input (System.in) that the user will use to provide commands.
     private Scanner input;
 
+    // A player - simply keeps track of how much HP and the stuff you've got.
+    private Sentient player;
+
     // The directory where the configuration files will be saved
     private String configDirectory;
 
@@ -42,8 +42,10 @@ public class Engine {
 
     public Engine(){
         roomMap = new HashMap<>();
-        enemies = new ArrayList<>();
+        enemies = new LinkedList<>();
         itemsToRooms = new HashMap<>();
+
+        player = null;
     }
 
     /*
@@ -75,15 +77,15 @@ public class Engine {
      * Adds a connection between two rooms requested. These room names must exist already in the Engine, and they
      * must be the Engine room names, NOT the room names that will be given to the player.
      *
-     * @param roomNameA - Room to connect from
-     * @param roomNameB - Room to connect to
+     * @param roomEngineNameA - Room to connect from
+     * @param roomEngineNameB - Room to connect to
      * @param direction - Direction from room A's perspective
      * @param isTwoWay - true if the connection from room B to room A is possible.
      */
-    public void addConnection(String roomNameA, String roomNameB, Direction direction, boolean isTwoWay){
-        if(roomMap.containsKey(roomNameA) && roomMap.containsKey(roomNameB)){
-            Room roomA = roomMap.get(roomNameA);
-            Room roomB = roomMap.get(roomNameB);
+    public void addConnection(String roomEngineNameA, String roomEngineNameB, Direction direction, boolean isTwoWay){
+        if(roomMap.containsKey(roomEngineNameA) && roomMap.containsKey(roomEngineNameB)){
+            Room roomA = roomMap.get(roomEngineNameA);
+            Room roomB = roomMap.get(roomEngineNameB);
 
             if(isTwoWay)
                 roomA.addTwoWayConnection(direction, roomB);
@@ -97,17 +99,17 @@ public class Engine {
 
     /**
      * Adds a connection between two rooms requested. These room names must exist already in the Engine, and they
-     * must be the Engine room names, NOT the room names that will be given to the player.
+     * must be the Engine room names, NOT the room names that will be shown to the player.
      *
-     * @param roomNameA - Room to connect from
-     * @param roomNameB - Room to connect to
+     * @param roomEngineNameA - Room to connect from
+     * @param roomEngineNameB - Room to connect to
      * @param direction - String direction from room A's perspective
      * @param isTwoWay - true if the connection from room B to room A is possible.
      */
-    public void addConnection(String roomNameA, String roomNameB, String direction, boolean isTwoWay){
-        if(roomMap.containsKey(roomNameA) && roomMap.containsKey(roomNameB)){
-            Room roomA = roomMap.get(roomNameA);
-            Room roomB = roomMap.get(roomNameB);
+    public void addConnection(String roomEngineNameA, String roomEngineNameB, String direction, boolean isTwoWay){
+        if(roomMap.containsKey(roomEngineNameA) && roomMap.containsKey(roomEngineNameB)){
+            Room roomA = roomMap.get(roomEngineNameA);
+            Room roomB = roomMap.get(roomEngineNameB);
 
             Direction d = Direction.toDirection(direction);
 
@@ -124,26 +126,113 @@ public class Engine {
         }
     }
 
+
+    /**
+     * Creates and adds an item given the parameters to the room requested. The room MUST exist within the Engine
+     * before attempting to add an Item to that room.
+     *
+     * @param itemPublicName - String public name of the item itself
+     * @param itemEngineName - String name that the game engine will identify as the item in question
+     * @param itemDescription - String description of the item itself
+     * @param roomEngineName - String engine name of the room that the item will be added to
+     */
+    public void addItem(String itemPublicName, String itemEngineName, String itemDescription, String roomEngineName, boolean canBeTaken){
+        Room r = roomMap.get(roomEngineName);
+
+        if(r == null)
+            throw new RuntimeException("Cannot add an item to a non-existent room.");
+
+        Item i = new Item(itemPublicName, itemEngineName, itemDescription, canBeTaken);
+
+        r.addItem(i);
+
+        // Temporarily commented out - I haven't decided if I need this data structure or not yet.
+//        itemsToRooms.put(i, r);
+    }
+
+    /**
+     * Adds a new player with the name passed to the new adventure.
+     *
+     * @param name - String name of the player
+     * @param hp - How much the player will have with starting HP
+     * @param defense - The defense value of the player
+     * @param damage - How much damage the player does
+     * @param toHit - How likely the player is able to be hit
+     */
+    public void addPlayer(String name, int hp, double attack, int defense, int damage, double toHit){
+        player = new Sentient(name, "", hp, attack, defense, damage, toHit, false);
+    }
+
+    /**
+     * Adds a Sentient to the room requested.
+     *
+     * @param name - String name of Sentient
+     * @param description - String description of the Sentient
+     * @param hp - int Hit points
+     * @param attack - double probability of attack
+     * @param defense - int defense value
+     * @param damage - int damage able to deal
+     * @param toHit - double probability of being hit
+     * @param isHostile - true if the Sentient will attack on sight
+     * @param roomEngineName - String name of the room to add this Sentient to.
+     */
+    public void addSentient(String name, String description, int hp, double attack, int defense, int damage, double toHit, boolean isHostile, String roomEngineName){
+        Room r = roomMap.get(roomEngineName);
+
+        if(r == null)
+            throw new RuntimeException("Must add Sentient to an already existent room.");
+
+        Sentient s = new Sentient(name, description, hp, attack, defense, damage, toHit, isHostile);
+        r.addSentient(s);
+    }
+
     /**
      * The game loop that runs the whole affair
      */
     public void playGame(){
-        // First we will populate the rooms and stuff
-        // TODO: Implement that^
+        // Check to make sure that there is a player of some sort that is ready to be used
+        if(player == null)
+            throw new RuntimeException("Game requires a player to play.");
+
+        // Now begin the actual gameplay
         input = new Scanner(System.in);
-        String command;
 
         // The never ending loop that handles everything
         while(true){
             System.out.println(currentRoom.getPublicName() + "\n");
 
+            // First check to see if we are in combat:
+            enemies = currentRoom.getHostileSentients();
+
+            // If we are in combat, let the enemies fight the player!
+            if(enemies.size() != 0){
+                for(Sentient s : enemies){
+                    System.out.println("You were attacked by " + s.getName() + ".");
+
+                    if(s.attack(player)) {
+                        System.out.println("You were hit.");
+                        player.takeDamage(s.getDamage());
+                    } else
+                        System.out.println(s.getName() + " missed.");
+                }
+
+                printHealthStatus();
+
+                if(player.isDead()){
+                    System.out.println("GAME OVER");
+                    return;
+                }
+            }
+
+            // If the current room hasn't been visited, give a description of the room.
             if(!currentRoom.isVisited()) {
-                printDescription(); // Print out the description of the current room
+                printCurrentRoomDescription(); // Print out the description of the current room
                 currentRoom.visit(); // Visit this room so that the description doesn't show up again.
             }
+
             System.out.print(">");
 
-            command = input.nextLine();
+            String command = input.nextLine();
 
             // The command parser. Takes what command was given and attempts to figure out what the user desired
             if(command.toLowerCase().equals("exit") || command.toLowerCase().equals("quit")){
@@ -161,7 +250,7 @@ public class Engine {
             }
 
             else if(command.startsWith("take")){
-                // TODO: Implement this
+                takeItem(command);
             }
 
             else if(command.startsWith("drop")){
@@ -183,9 +272,38 @@ public class Engine {
     }
 
     /**
+     * Prints out the current health status of the player.
+     *
+     * TODO: Consider making these values changeable for the creator to be able to decide when he wants his player to be worried about his/her health
+     */
+    private void printHealthStatus() {
+        switch(player.getCurrentHitPoints()){
+            case 7:
+            case 6:
+                System.out.println("You have a few scratches");
+                break;
+            case 5:
+            case 4:
+                System.out.println("You're bleeding a small amount.");
+                break;
+            case 3:
+            case 2:
+                System.out.println("You're bleeding a lot.");
+                break;
+            case 1:
+                System.out.println("You are on the verge of death.");
+                break;
+            case 0:
+                System.out.println("You have been killed.");
+            default:
+                System.out.println("You are feeling healthy.");
+        }
+    }
+
+    /**
      * Prints the description of the current room.
      */
-    private void printDescription(){
+    private void printCurrentRoomDescription(){
         System.out.println(currentRoom.getDescription() + "\n");
 
         for(Item i : currentRoom.getItems())
@@ -213,14 +331,12 @@ public class Engine {
      */
     private void look(String line){
         Scanner s = new Scanner(line);
+        s.next();
 
         // If the simple look command was run then show the description of the room and any items
         // left inside.
         if(!s.hasNext()) {
-            System.out.println(currentRoom.getDescription() + "\n");
-
-            for(Item i : currentRoom.getItems())
-                System.out.println(i.getDescription() + "\n");
+            printCurrentRoomDescription();
         } else if(s.next().toLowerCase().equals("at")){
             String thing = s.next();
 
@@ -256,8 +372,14 @@ public class Engine {
      *
      * @param line - String command that the user gave
      */
-    private void take(String line){
-        // TODO: Implement this
+    private void takeItem(String line){
+        line = line.replace("take", "");
+
+        if(line.isEmpty()){
+            System.out.println("Take what?");
+        }
+
+        // TODO: Finish implementing this - requires a Player object of some sort.
     }
 
     /**

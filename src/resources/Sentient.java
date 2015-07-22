@@ -20,7 +20,10 @@ public class Sentient {
     // The defense bonus of this sentient.
     private int defense;
 
-    // Double value representing the chance of hitting this sentient.
+    // The attack accuracy of this Sentient - must be between 0 and 1
+    private double attack;
+
+    // Double value representing the chance of hitting this sentient - must be between 0 and 1
     private double toHit;
 
     // The bonus applied toHit - often from holding a weapon
@@ -47,11 +50,12 @@ public class Sentient {
     // The description of the Sentient being itself
     private String description;
 
-    public Sentient(String _name, String _description, int hitPoints, int _defense, int _damage, double _toHit, boolean _isHostile){
+    public Sentient(String _name, String _description, int hitPoints, double _attack, int _defense, int _damage, double _toHit, boolean _isHostile){
         name = _name;
         description = _description;
         currentHitPoints = hitPoints;
         totalHitPoints = hitPoints;
+        attack = _attack;
         defense = _defense;
         toHit = _toHit;
         damage = _damage;
@@ -69,7 +73,7 @@ public class Sentient {
      * @param i - Item to add
      */
     public void addItem(Item i){
-        inventory.put(i.getItemName().toLowerCase(), i);
+        inventory.put(i.getPublicName().toLowerCase(), i);
     }
 
     /**
@@ -145,15 +149,15 @@ public class Sentient {
 
     /**
      * Attacks the sentient passed.
+     *
      * @param s - The Sentient to attack
-     * @return true if the attak hits.
+     * @return true if the attack hits.
      */
     public boolean attack(Sentient s){
-        if(Math.random() < toHit) {
-            s.takeDamage(damage + (int)(Math.random() / 3));
+        if(Math.random() + attack >= s.toHit)
             return true;
-        } else
-            return false;
+
+        return false;
     }
 
     /**
@@ -250,4 +254,6 @@ public class Sentient {
     }
 
     public void setDescription(String _description) { description = _description; }
+
+    public int getDamage(){ return damage; }
 }

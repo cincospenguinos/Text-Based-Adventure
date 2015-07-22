@@ -269,13 +269,13 @@ public class AndreAdventure {
 //        if(itemsToRooms.get(i) == currentRoom){
 //            // We don't have to worry what room it is because we are only allowing two items to be useable
 //            // in one room.
-//            if(i.getItemName().toLowerCase().equals("dog bowl")){
+//            if(i.getPublicName().toLowerCase().equals("dog bowl")){
 //                // First, drop the item
 //                currentRoom.addItem(player.dropItem(item));
 //                System.out.println("You placed the dog bowl before the shrine.");
 //                checkEndGame();
 //                return;
-//            } else if (i.getItemName().toLowerCase().equals("old baguette")){
+//            } else if (i.getPublicName().toLowerCase().equals("old baguette")){
 //                currentRoom.addItem(player.dropItem(item));
 //                System.out.println("You placed the old baguette before the shrine.");
 //                checkEndGame();
