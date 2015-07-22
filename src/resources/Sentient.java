@@ -44,8 +44,12 @@ public class Sentient {
     // The weapon that is currently equipped
     private Weapon equippedWeapon;
 
-    public Sentient(String _name, int hitPoints, int _defense, int _damage, double _toHit, boolean _isHostile){
+    // The description of the Sentient being itself
+    private String description;
+
+    public Sentient(String _name, String _description, int hitPoints, int _defense, int _damage, double _toHit, boolean _isHostile){
         name = _name;
+        description = _description;
         currentHitPoints = hitPoints;
         totalHitPoints = hitPoints;
         defense = _defense;
@@ -240,4 +244,10 @@ public class Sentient {
     public Collection<Item> getInventory(){
         return inventory.values();
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String _description) { description = _description; }
 }

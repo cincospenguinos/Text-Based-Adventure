@@ -79,7 +79,7 @@ public enum Direction {
     }
 
     /**
-     * Returns the opposite direciton of the direction passed into this method.
+     * Returns the opposite direction of the direction passed into this method.
      *
      * @param d - Direction to get the opposite of
      * @return Opposite direction of the direction passed.

@@ -35,7 +35,7 @@ public class Item {
     }
 
     public Item(Sentient s){
-        itemName = s.getName() + " Corpse";
+        itemName = "Corpse of " + s.getName();
         description = "This is the corpse of " + s.getName();
         canBeTaken = false;
         quantity = 1;
