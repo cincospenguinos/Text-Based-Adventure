@@ -254,7 +254,7 @@ public class Engine {
             }
 
             else if(command.startsWith("drop")){
-                // TODO: Implement this
+                dropItem(command.replace("drop", "").trim());
             }
 
             else if(command.startsWith("attack")){
@@ -380,6 +380,10 @@ public class Engine {
         }
 
         // TODO: Finish implementing this - requires a Player object of some sort.
+    }
+
+    private void dropItem(String line){
+
     }
 
     /**
