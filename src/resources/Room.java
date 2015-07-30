@@ -183,6 +183,16 @@ public class Room {
         return visited;
     }
 
+    /**
+     * Checks to see if the item matching itemName is found within this Room. All item names are
+     * always stored as lower case forms of their public names. Therefore, all requests for an
+     * item must request the name of the item in lower case letters.
+     *
+     * Returns true if the item passed is contained in this room.
+     *
+     * @param itemName - String name of item in lower case
+     * @return true if this item is in the room
+     */
     public boolean hasItem(String itemName){
         return items.containsKey(itemName);
     }

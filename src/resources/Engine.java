@@ -40,12 +40,25 @@ public class Engine {
     // True if player is allowed to save the game, creating a new adventure.tacfg file
     private boolean isSaveEnabled;
 
+    // A flag that indicates whether the command was completed or not. This flag will be set to
+    // false unless there is a command that the user typed in that failed (bad syntax, incorrect
+    // spelling, etc) When true, combat will not occur.
+    private boolean incompleteCommandFlag;
+
     public Engine(){
         roomMap = new HashMap<>();
         enemies = new LinkedList<>();
         itemsToRooms = new HashMap<>();
 
         player = null;
+    }
+
+    public Engine(Sentient _player){
+        roomMap = new HashMap<>();
+        enemies = new LinkedList<>();
+        itemsToRooms = new HashMap<>();
+
+        player = _player;
     }
 
     /*
@@ -59,7 +72,7 @@ public class Engine {
      * @param engineName - String name that will be used to identify this specific room
      * @param description - String description of the room itself.
      */
-    public void addRoom(String name, String engineName,  String description){
+    public void addRoom(String name, String engineName, String description){
         if(name == null || description == null)
             throw new RuntimeException("Cannot add a room without a name or description.");
 
@@ -205,7 +218,7 @@ public class Engine {
             enemies = currentRoom.getHostileSentients();
 
             // If we are in combat, let the enemies fight the player!
-            if(enemies.size() != 0){
+            if(enemies.size() != 0 && !incompleteCommandFlag){
                 for(Sentient s : enemies){
                     System.out.println("You were attacked by " + s.getName() + ".");
 
@@ -223,6 +236,9 @@ public class Engine {
                     return;
                 }
             }
+
+            if(!incompleteCommandFlag)
+                incompleteCommandFlag = !incompleteCommandFlag;
 
             // If the current room hasn't been visited, give a description of the room.
             if(!currentRoom.isVisited()) {
@@ -249,7 +265,7 @@ public class Engine {
                 look(command.replace("look ", ""));
             }
 
-            else if(command.startsWith("take")){
+            else if(command.startsWith("take") || command.startsWith("get")){
                 takeItem(command);
             }
 
@@ -274,7 +290,8 @@ public class Engine {
     /**
      * Prints out the current health status of the player.
      *
-     * TODO: Consider making these values changeable for the creator to be able to decide when he wants his player to be worried about his/her health
+     * TODO: Consider making these values changeable for the creator to be
+     * TODO: able to decide when he wants his player to be worried about his/her health
      */
     private void printHealthStatus() {
         switch(player.getCurrentHitPoints()){
@@ -307,7 +324,7 @@ public class Engine {
         System.out.println(currentRoom.getDescription() + "\n");
 
         for(Item i : currentRoom.getItems())
-            System.out.println(i.getDescription() + "\n");
+            System.out.println("There is a " + i.getPublicName().toLowerCase() + ".");
     }
 
     /**
@@ -340,12 +357,14 @@ public class Engine {
         } else if(s.next().toLowerCase().equals("at")){
             String thing = s.next();
 
-            // TODO: Include a check for inventory items here as well.
             if(thing == null || !currentRoom.hasItem(thing) || !currentRoom.hasSentient(thing)){
                 System.out.println("Look at what?");
-            } else if (currentRoom.hasItem(thing)){
+                incompleteCommandFlag = true;
+            } else if (currentRoom.hasItem(thing)) {
                 System.out.println(currentRoom.getItem(thing).getDescription());
-            } else{
+            } else if (player.hasItem(thing)) {
+                System.out.println(player.getItem(thing).getDescription());
+            } else {
                 System.out.println(currentRoom.getSentient(thing).getDescription());
             }
         }
@@ -374,12 +393,22 @@ public class Engine {
      */
     private void takeItem(String line){
         line = line.replace("take", "");
+        line = line.replace("get", "");
+        line = line.trim();
 
         if(line.isEmpty()){
             System.out.println("Take what?");
+            incompleteCommandFlag = true;
+            return;
         }
 
-        // TODO: Finish implementing this - requires a Player object of some sort.
+        if(currentRoom.hasItem(line.toLowerCase())){
+            Item i = currentRoom.takeItem(line.toLowerCase());
+            player.addItem(i);
+            System.out.println("Taken.");
+        } else {
+            System.out.println("That doesn't seem to be here.");
+        }
     }
 
     private void dropItem(String line){
