@@ -30,8 +30,8 @@ public class Item {
         canBeTaken = true;
     }
 
-    public Item(String _itemName, String _engineName, String _description, boolean _canBeTaken){
-        publicName = _itemName;
+    public Item(String _publicName, String _engineName, String _description, boolean _canBeTaken){
+        publicName = _publicName;
         engineName = _engineName;
         description = _description;
         canBeTaken = _canBeTaken;

@@ -140,10 +140,16 @@ public class Room {
     }
 
     /**
-     * Adds the item passed to the collection of items included.
+     * Adds the item passed to the collection of items included. Throws a RuntimeException if the item
+     * passed has an equivalent name to one that already exists in this room.
+     *
      * @param i - Item to add
+     * @throws RuntimeException
      */
     public void addItem(Item i){
+        if(items.containsKey(i.getPublicName().toLowerCase()))
+            throw new RuntimeException("Item with name lower case name \"" + i.getPublicName().toLowerCase() + "\" already exists.");
+
         items.put(i.getPublicName().toLowerCase(), i);
     }
 
@@ -156,15 +162,15 @@ public class Room {
      */
     public Item takeItem(String itemName){
         // If the item exists, we will run a couple of checks
-        if(items.containsKey(itemName)) {
-            Item i = items.get(itemName);
+        if(items.containsKey(itemName.toLowerCase())) {
+            Item i = items.get(itemName.toLowerCase());
 
             // If the item can't be taken, return null
             if(!i.canBeTaken())
                 return null;
 
             // Otherwise, remove the item and return it.
-            items.remove(itemName);
+            items.remove(itemName.toLowerCase());
             return i;
         }
 
@@ -185,8 +191,7 @@ public class Room {
 
     /**
      * Checks to see if the item matching itemName is found within this Room. All item names are
-     * always stored as lower case forms of their public names. Therefore, all requests for an
-     * item must request the name of the item in lower case letters.
+     * always stored as lower case forms of their public names.
      *
      * Returns true if the item passed is contained in this room.
      *
@@ -194,12 +199,12 @@ public class Room {
      * @return true if this item is in the room
      */
     public boolean hasItem(String itemName){
-        return items.containsKey(itemName);
+        return items.containsKey(itemName.toLowerCase());
     }
 
     public Item getItem(String itemName){
-        if(items.containsKey(itemName))
-            return items.get(itemName);
+        if(items.containsKey(itemName.toLowerCase()))
+            return items.get(itemName.toLowerCase());
 
         return null;
     }

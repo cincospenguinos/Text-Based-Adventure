@@ -348,7 +348,6 @@ public class Engine {
      */
     private void look(String line){
         Scanner s = new Scanner(line);
-        s.next();
 
         // If the simple look command was run then show the description of the room and any items
         // left inside.

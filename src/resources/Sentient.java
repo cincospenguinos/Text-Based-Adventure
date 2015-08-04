@@ -67,6 +67,21 @@ public class Sentient {
         equippedWeapon = null;
     }
 
+    public Sentient(String _name, String _description, boolean _isHostile){
+        name = _name;
+        description = _description;
+        isHostile = _isHostile;
+
+        currentHitPoints = totalHitPoints = 5;
+        attack = defense = damage = 0;
+        toHit = 0.0;
+        isDead = false;
+
+        inventory = new HashMap<>();
+
+        equippedWeapon = null;
+    }
+
     /**
      * Adds the item passed into the inventory of this Sentient.
      *
